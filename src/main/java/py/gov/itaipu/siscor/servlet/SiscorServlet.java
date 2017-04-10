@@ -8,17 +8,22 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.inject.Inject;
 import java.lang.System;
+import java.util.List;
 
-import py.gov.itaipu.siscor.api.MyPluginComponent;
+// import py.gov.itaipu.siscor.api.MyPluginComponent;
+import py.gov.itaipu.siscor.api.SiscorMinutaService;
+import py.gov.itaipu.siscor.entity.confluence.SiscorMinuta;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
 public final class SiscorServlet extends HttpServlet
 {
+    // @ComponentImport
+    // private final MyPluginComponent service;
     @ComponentImport
-    private final MyPluginComponent service;
+    private final SiscorMinutaService service;
 
     @Inject
-    public SiscorServlet(MyPluginComponent service)
+    public SiscorServlet(SiscorMinutaService service)
     {
         System.out.println("init SiscorServlet");
         this.service = service;
@@ -27,8 +32,19 @@ public final class SiscorServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
+        service.holaMundoService();
+        service.add("03", "089");
+        service.add("04", "090");
+        service.add("05", "091");
+        List<SiscorMinuta> lista = service.all();
+        SiscorMinuta siscorMinuta = service.last();
+        if(siscorMinuta != null){
+          System.out.println(siscorMinuta.getMinutaCodigo());
+        }
         final PrintWriter w = res.getWriter();
-        w.write("<h1>SISCOR SISCOR SISCOR</h1>");
+        siscorMinuta = lista.stream.reduce((a, b) -> b).orElse(null);
+        w.write("<h1>SISCOR SIZE:"+lista.size()+"</h1>");
+        w.write("<h1>SISCOR SIZE:"+siscorMinuta.getId()+"</h1>");
         w.close();
     }
 
