@@ -26,4 +26,9 @@
         <url-pattern>/siscorservlet</url-pattern>
     </servlet>
 
+    <ao key="ao-module">
+        <description>The module configuring the Active Objects service used by this plugin</description>
+        <entity>py.gov.itaipu.siscor.entity.confluence.SiscorMinuta</entity>
+    </ao>
+
 </atlassian-plugin>
