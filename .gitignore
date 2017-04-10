@@ -1,0 +1,9 @@
+# Ignore Eclipse dirs
+.DS_Store
+.classpath
+.project
+
+
+# Ignore target directories
+target/**/*
+.settings/**/*
