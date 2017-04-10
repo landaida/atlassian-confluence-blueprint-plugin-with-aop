@@ -42,9 +42,9 @@ public final class SiscorServlet extends HttpServlet
           System.out.println(siscorMinuta.getMinutaCodigo());
         }
         final PrintWriter w = res.getWriter();
-        siscorMinuta = lista.stream.reduce((a, b) -> b).orElse(null);
-        w.write("<h1>SISCOR SIZE:"+lista.size()+"</h1>");
-        w.write("<h1>SISCOR SIZE:"+siscorMinuta.getId()+"</h1>");
+        siscorMinuta = lista.stream().reduce((a, b) -> b).orElse(null);
+        w.write("<h1>SISCOR-MINUTA QUANTITY:"+lista.size()+"</h1>");
+        w.write("<h1>SISCOR-MINUTA LAST ID:"+siscorMinuta.getID()+"</h1>");
         w.close();
     }
 
