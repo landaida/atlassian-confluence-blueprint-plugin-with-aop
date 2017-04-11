@@ -1,5 +1,7 @@
 package py.gov.itaipu.siscor.impl;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,6 +18,7 @@ import py.gov.itaipu.siscor.api.SiscorDocumentoService;
 public final class SiscorDocumentoServiceImpl<T> implements SiscorDocumentoService<T>
 {
     private static final String INITIAL_CODE = "00000";
+    private final Class<T> genericType;
 
     @ComponentImport
     private final ActiveObjects ao;
@@ -39,6 +42,15 @@ public final class SiscorDocumentoServiceImpl<T> implements SiscorDocumentoServi
 	}
 
     
-
-    
+    private T initializeMinutaNewYear(){
+    	final ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
+    	Class<T> theType = (Class<T>) (type).getActualTypeArguments()[0];
+    	Class clazz = Class.forName(theType.getName());    	
+        String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+        T siscorMinuta = (T) ao.create(clazz);
+        
+        ((Object) siscorMinuta).setMinutaAno(currentYear);
+        ((Object) siscorMinuta).setMinutaCodigo(INITIAL_CODE);
+        return siscorMinuta;
+    }
 }
