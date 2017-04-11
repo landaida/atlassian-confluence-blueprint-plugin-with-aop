@@ -1,30 +1,31 @@
 package py.gov.itaipu.siscor.servlet;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import javax.inject.Inject;
-import java.lang.System;
-import java.util.List;
+
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
 // import py.gov.itaipu.siscor.api.MyPluginComponent;
-import py.gov.itaipu.siscor.api.SiscorMinutaService;
-import py.gov.itaipu.siscor.entity.confluence.SiscorMinuta;
-import py.gov.itaipu.siscor.entity.confluence.dto.SiscorMinutaDTO;
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import py.gov.itaipu.siscor.api.SiscorDocumentoService;
+import py.gov.itaipu.siscor.entity.confluence.SiscorMemorando;
+import py.gov.itaipu.siscor.entity.confluence.dto.SiscorMemorandoDTO;
 
 public final class SiscorServlet extends HttpServlet
 {
-    // @ComponentImport
-    // private final MyPluginComponent service;
-    @ComponentImport
-    private final SiscorMinutaService service;
+	private static final long serialVersionUID = 3915110675953041082L;
+	
+	@ComponentImport
+    private final SiscorDocumentoService<SiscorMemorando> service;
 
     @Inject
-    public SiscorServlet(SiscorMinutaService service)
+    public SiscorServlet(SiscorDocumentoService<SiscorMemorando> service)
     {
         System.out.println("init SiscorServlet");
         this.service = service;
@@ -33,15 +34,15 @@ public final class SiscorServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
-        SiscorMinutaDTO siscorMinutaDTO = new SiscorMinutaDTO();
-        service.addMinuta(siscorMinutaDTO);
+        SiscorMemorandoDTO siscorMemorandoDTO = new SiscorMemorandoDTO();
+        service.add((SiscorMemorando) siscorMemorandoDTO);
 
-        List<SiscorMinuta> lista = service.allMinuta();
+        List<SiscorMemorando> lista = service.all();
 
         final PrintWriter w = res.getWriter();
-        SiscorMinuta siscorMinuta = lista.stream().reduce((a, b) -> b).orElse(null);
+        SiscorMemorando siscorMemorando = lista.stream().reduce((a, b) -> b).orElse(null);
         w.write("<h1>SISCOR-MINUTA QUANTITY:"+lista.size()+"</h1>");
-        w.write("<h1>SISCOR-MINUTA LAST ID:"+siscorMinuta.getID()+"</h1>");
+        w.write("<h1>SISCOR-MINUTA LAST ID:"+siscorMemorando.getID()+"</h1>");
         w.close();
     }
 
