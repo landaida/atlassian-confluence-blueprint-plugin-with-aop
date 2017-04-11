@@ -4,16 +4,16 @@ import com.atlassian.activeobjects.tx.Transactional;
 import java.util.List;
 
 import py.gov.itaipu.siscor.entity.confluence.SiscorMinuta;
+import py.gov.itaipu.siscor.entity.confluence.dto.SiscorMinutaDTO;
 
 
 @Transactional
 public interface SiscorMinutaService
 {
-  SiscorMinuta addMinuta(String minutaCodigo, String minutaAno);
+    SiscorMinuta addMinuta(SiscorMinutaDTO siscorMinutaDTO);
 
-  List<SiscorMinuta> allMinuta();
+    List<SiscorMinuta> allMinuta();
 
-  SiscorMinuta lastMinuta();
+    SiscorMinuta lastMinuta();
 
-  String nextValMinuta();
 }

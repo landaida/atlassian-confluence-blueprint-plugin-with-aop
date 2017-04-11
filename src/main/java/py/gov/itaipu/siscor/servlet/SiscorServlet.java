@@ -13,6 +13,7 @@ import java.util.List;
 // import py.gov.itaipu.siscor.api.MyPluginComponent;
 import py.gov.itaipu.siscor.api.SiscorMinutaService;
 import py.gov.itaipu.siscor.entity.confluence.SiscorMinuta;
+import py.gov.itaipu.siscor.entity.confluence.dto.SiscorMinutaDTO;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 
 public final class SiscorServlet extends HttpServlet
@@ -32,23 +33,13 @@ public final class SiscorServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
-        service.addMinuta("00001", "2016");
-        service.addMinuta("00002", "2016");
-        service.addMinuta("00003", "2016");
-        service.nextValMinuta();
+        SiscorMinutaDTO siscorMinutaDTO = new SiscorMinutaDTO();
+        service.addMinuta(siscorMinutaDTO);
 
-        service.addMinuta("00001", "2017");
-        service.addMinuta("00002", "2017");
-        service.addMinuta("00003", "2017");
-        service.nextValMinuta();
-        
         List<SiscorMinuta> lista = service.allMinuta();
-        SiscorMinuta siscorMinuta = service.lastMinuta();
-        if(siscorMinuta != null){
-          System.out.println(siscorMinuta.getMinutaCodigo());
-        }
+
         final PrintWriter w = res.getWriter();
-        siscorMinuta = lista.stream().reduce((a, b) -> b).orElse(null);
+        SiscorMinuta siscorMinuta = lista.stream().reduce((a, b) -> b).orElse(null);
         w.write("<h1>SISCOR-MINUTA QUANTITY:"+lista.size()+"</h1>");
         w.write("<h1>SISCOR-MINUTA LAST ID:"+siscorMinuta.getID()+"</h1>");
         w.close();

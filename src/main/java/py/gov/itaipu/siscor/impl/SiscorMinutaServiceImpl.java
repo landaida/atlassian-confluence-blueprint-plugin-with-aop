@@ -20,6 +20,7 @@ import javax.inject.Named;
 
 import py.gov.itaipu.siscor.api.SiscorMinutaService;
 import py.gov.itaipu.siscor.entity.confluence.SiscorMinuta;
+import py.gov.itaipu.siscor.entity.confluence.dto.SiscorMinutaDTO;
 
 @ExportAsService ({SiscorMinutaService.class})
 @Named ("siscorMinutaService")
@@ -36,19 +37,18 @@ public final class SiscorMinutaServiceImpl implements SiscorMinutaService
     }
 
     @Override
-    public SiscorMinuta addMinuta(String minutaCodigo, String minutaAno)
+    public SiscorMinuta addMinuta(SiscorMinutaDTO siscorMinutaDTO)
     {
-      System.out.println("inside add " + minutaCodigo + " " + minutaAno);
-      SiscorMinuta entity = null;
+        siscorMinutaDTO = nextValMinuta();
+        SiscorMinuta siscorMinuta = ao.create(SiscorMinuta.class);
       try{
-        entity = ao.create(SiscorMinuta.class);
-        entity.setMinutaCodigo(minutaCodigo);
-        entity.setMinutaAno(minutaAno);
-        entity.save();
+        siscorMinuta.setMinutaCodigo(siscorMinutaDTO.getMinutaCodigo());
+        siscorMinuta.setMinutaAno(siscorMinutaDTO.getMinutaAno());
+        siscorMinuta.save();
       }catch(Exception e){
         e.printStackTrace();
       }
-        return entity;
+        return siscorMinuta;
     }
 
     @Override
@@ -62,11 +62,14 @@ public final class SiscorMinutaServiceImpl implements SiscorMinutaService
     public SiscorMinuta lastMinuta()
     {
       List<SiscorMinuta> lista =  Arrays.asList(ao.find(SiscorMinuta.class, Query.select().order("ID DESC").limit(1)));
-      return lista.isEmpty() ? null : lista.get(0);
+      SiscorMinuta siscorMinuta = lista.isEmpty() ? null : lista.get(0);
+      if(Objects.nonNull(siscorMinuta)){
+          System.out.println("lastMinuta " + toString(siscorMinuta));
+      }
+      return siscorMinuta;
     }
 
-    @Override
-    public String nextValMinuta(){
+    private SiscorMinutaDTO nextValMinuta(){
         String nextValMinuta = "";
         SiscorMinuta lastMinuta = lastMinuta();
         boolean existsLastMinuta = Objects.nonNull(lastMinuta);
@@ -85,8 +88,14 @@ public final class SiscorMinutaServiceImpl implements SiscorMinutaService
         String newMinutaCodigo = String.format("%05d", lastMinutaCodigo+1);
 
         nextValMinuta = newMinutaCodigo + currentYear;
+
+        SiscorMinutaDTO siscorMinutaDTO = new SiscorMinutaDTO();
+        siscorMinutaDTO.setMinutaCodigo(newMinutaCodigo);
+        siscorMinutaDTO.setMinutaAno(currentYear);
+
         System.out.println("nextVal: " + nextValMinuta);
-        return nextValMinuta;
+
+        return siscorMinutaDTO;
     }
 
     private SiscorMinuta initializeMinutaNewYear(){
@@ -95,5 +104,11 @@ public final class SiscorMinutaServiceImpl implements SiscorMinutaService
         siscorMinuta.setMinutaAno(currentYear);
         siscorMinuta.setMinutaCodigo(INITIAL_CODE);
         return siscorMinuta;
+    }
+
+    private String toString(SiscorMinuta siscorMinuta){
+        return "ID: " + siscorMinuta.getID()
+        + " codigo:" + siscorMinuta.getMinutaCodigo()
+        + " ano: " + siscorMinuta.getMinutaAno();
     }
 }
