@@ -9,11 +9,11 @@ import py.gov.itaipu.siscor.entity.confluence.SiscorMinuta;
 @Transactional
 public interface SiscorMinutaService
 {
-  SiscorMinuta add(String minutaCodigo, String minutaAno);
+  SiscorMinuta addMinuta(String minutaCodigo, String minutaAno);
 
-  List<SiscorMinuta> all();
+  List<SiscorMinuta> allMinuta();
 
-  SiscorMinuta last();
+  SiscorMinuta lastMinuta();
 
-  void holaMundoService();
+  String nextValMinuta();
 }

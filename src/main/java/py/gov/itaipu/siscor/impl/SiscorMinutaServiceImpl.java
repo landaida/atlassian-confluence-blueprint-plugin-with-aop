@@ -5,8 +5,11 @@ import net.java.ao.Query;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Calendar;
 import java.lang.System;
 import java.lang.Exception;
+import java.lang.Integer;
 
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -22,6 +25,7 @@ import py.gov.itaipu.siscor.entity.confluence.SiscorMinuta;
 @Named ("siscorMinutaService")
 public final class SiscorMinutaServiceImpl implements SiscorMinutaService
 {
+    private static final String INITIAL_CODE = "00000";
     @ComponentImport
     private final ActiveObjects ao;
 
@@ -32,7 +36,7 @@ public final class SiscorMinutaServiceImpl implements SiscorMinutaService
     }
 
     @Override
-    public SiscorMinuta add(String minutaCodigo, String minutaAno)
+    public SiscorMinuta addMinuta(String minutaCodigo, String minutaAno)
     {
       System.out.println("inside add " + minutaCodigo + " " + minutaAno);
       SiscorMinuta entity = null;
@@ -48,23 +52,48 @@ public final class SiscorMinutaServiceImpl implements SiscorMinutaService
     }
 
     @Override
-    public List<SiscorMinuta> all()
+    public List<SiscorMinuta> allMinuta()
     {
       List<SiscorMinuta> lista =  Arrays.asList(ao.find(SiscorMinuta.class));
-      if(!lista.isEmpty()){
-        System.out.println("all length " + lista.size());
-      }
       return lista;
     }
 
     @Override
-    public SiscorMinuta last()
+    public SiscorMinuta lastMinuta()
     {
-      SiscorMinuta[] lista = ao.find(SiscorMinuta.class, Query.select().order("ID DESC").limit(1));
-      return lista[0];
+      List<SiscorMinuta> lista =  Arrays.asList(ao.find(SiscorMinuta.class, Query.select().order("ID DESC").limit(1)));
+      return lista.isEmpty() ? null : lista.get(0);
     }
+
     @Override
-    public void holaMundoService(){
-        System.out.println("HOLA MUNDO FROM SERVICE");
+    public String nextValMinuta(){
+        String nextValMinuta = "";
+        SiscorMinuta lastMinuta = lastMinuta();
+        boolean existsLastMinuta = Objects.nonNull(lastMinuta);
+        String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+
+        if(existsLastMinuta){
+            boolean currentYearEqualsToLastMinutaYear = currentYear.equals(lastMinuta.getMinutaAno());
+            if(!currentYearEqualsToLastMinutaYear){
+              lastMinuta = initializeMinutaNewYear();
+            }
+        }else{
+            lastMinuta = initializeMinutaNewYear();
+        }
+
+        Integer lastMinutaCodigo = Integer.parseInt(lastMinuta.getMinutaCodigo());
+        String newMinutaCodigo = String.format("%05d", lastMinutaCodigo+1);
+
+        nextValMinuta = newMinutaCodigo + currentYear;
+        System.out.println("nextVal: " + nextValMinuta);
+        return nextValMinuta;
+    }
+
+    private SiscorMinuta initializeMinutaNewYear(){
+        String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+        SiscorMinuta siscorMinuta = ao.create(SiscorMinuta.class);;
+        siscorMinuta.setMinutaAno(currentYear);
+        siscorMinuta.setMinutaCodigo(INITIAL_CODE);
+        return siscorMinuta;
     }
 }

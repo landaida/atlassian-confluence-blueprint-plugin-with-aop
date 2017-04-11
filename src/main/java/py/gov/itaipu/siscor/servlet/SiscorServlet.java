@@ -32,12 +32,18 @@ public final class SiscorServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
-        service.holaMundoService();
-        service.add("03", "089");
-        service.add("04", "090");
-        service.add("05", "091");
-        List<SiscorMinuta> lista = service.all();
-        SiscorMinuta siscorMinuta = service.last();
+        service.addMinuta("00001", "2016");
+        service.addMinuta("00002", "2016");
+        service.addMinuta("00003", "2016");
+        service.nextValMinuta();
+
+        service.addMinuta("00001", "2017");
+        service.addMinuta("00002", "2017");
+        service.addMinuta("00003", "2017");
+        service.nextValMinuta();
+        
+        List<SiscorMinuta> lista = service.allMinuta();
+        SiscorMinuta siscorMinuta = service.lastMinuta();
         if(siscorMinuta != null){
           System.out.println(siscorMinuta.getMinutaCodigo());
         }
@@ -54,7 +60,6 @@ public final class SiscorServlet extends HttpServlet
         //final String autor = req.getParameter("autor");
         //SiscorMinuta siscorMinuta = newArrayList(ao.find(SiscorMinuta.class, Query.select().order("ID DESC").limit(1))).get(0);
         //System.out.println("siscorMinuta " + siscorMinuta != null ? siscorMinuta.getMinutaCodigo() : "no encontrado");
-        // siscorMinutaService.holaMundoService();
         //res.sendRedirect(req.getContextPath() + "/plugins/servlet/siscor/wizard");
     }
 }
