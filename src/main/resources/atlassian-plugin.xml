@@ -28,7 +28,7 @@
 
     <ao key="ao-module">
         <description>The module configuring the Active Objects service used by this plugin</description>
-        <entity>py.gov.itaipu.siscor.entity.confluence.SiscorMinuta</entity>
+        <entity>py.gov.itaipu.siscor.entity.confluence.SiscorMemorando</entity>
     </ao>
 
 </atlassian-plugin>

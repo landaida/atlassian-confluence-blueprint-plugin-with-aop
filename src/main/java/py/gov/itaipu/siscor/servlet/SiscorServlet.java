@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 // import py.gov.itaipu.siscor.api.MyPluginComponent;
 import py.gov.itaipu.siscor.api.SiscorDocumentoService;
 import py.gov.itaipu.siscor.entity.confluence.SiscorMemorando;
+import py.gov.itaipu.siscor.entity.confluence.dto.SiscorDocumentoDTO;
 import py.gov.itaipu.siscor.entity.confluence.dto.SiscorMemorandoDTO;
 
 public final class SiscorServlet extends HttpServlet
@@ -22,10 +24,10 @@ public final class SiscorServlet extends HttpServlet
 	private static final long serialVersionUID = 3915110675953041082L;
 	
 	@ComponentImport
-    private final SiscorDocumentoService<SiscorMemorando> service;
+    private final SiscorDocumentoService<SiscorMemorando, SiscorMemorandoDTO> service;
 
     @Inject
-    public SiscorServlet(SiscorDocumentoService<SiscorMemorando> service)
+    public SiscorServlet(SiscorDocumentoService<SiscorMemorando, SiscorMemorandoDTO> service)
     {
         System.out.println("init SiscorServlet");
         this.service = service;
@@ -35,7 +37,8 @@ public final class SiscorServlet extends HttpServlet
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
         SiscorMemorandoDTO siscorMemorandoDTO = new SiscorMemorandoDTO();
-        service.add((SiscorMemorando) siscorMemorandoDTO);
+        System.out.println("doGET "+service.getClass());
+        service.add(siscorMemorandoDTO);
 
         List<SiscorMemorando> lista = service.all();
 
